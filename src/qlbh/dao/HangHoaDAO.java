@@ -7,98 +7,99 @@ package qlbh.dao;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
-import qlbh.model.HangHoa;
+import qlbh.model.ChucVu;
 
 /**
  *
  * @author Bao Nhu
  */
-public class HangHoaDAO {
-    public static ArrayList<HangHoa>layDanhSachHangHoa(){
-        ArrayList<HangHoa> dshh = new ArrayList<HangHoa>();
+public class ChucVuDAO {
+    
+    //lấy danh sách chức vụ
+    public static ArrayList<ChucVu>layDanhSachChucVu(){
+        ArrayList<ChucVu> danhSachChucVu = new ArrayList<ChucVu>();
        
         try {
-            String sql = "Select * from hanghoa";
+            String sql = "Select * from ChucVu";
             SQLServerDataProvider provider = new SQLServerDataProvider();
             provider.open();
             ResultSet resultSet = provider.excuteQuery(sql);
             while(resultSet.next()){
-                HangHoa hh = new HangHoa();
-                hh.setMaHH(resultSet.getString("mahh"));
-                hh.setTenHH(resultSet.getString("tenhh"));
-                hh.setMaLoai(resultSet.getString("maloai"));
-                hh.setSoLuong(resultSet.getInt("soluong"));
-                hh.setdVT(resultSet.getString("dvt"));
-                hh.setGia(resultSet.getFloat("gia"));
-                dshh.add(hh);
+                ChucVu chuVu = new ChucVu();
+                chuVu.setMaCV(resultSet.getString("MACV"));
+                chuVu.setTenCV(resultSet.getString("TENCV"));
+                chuVu.setLuong(resultSet.getFloat("LUONG"));
+                danhSachChucVu.add(chuVu);
             }
             provider.Close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return dshh;
+        return danhSachChucVu;
     }
     
-    public static boolean themHangHoa(HangHoa hh){
-        boolean kq = false;
-        String sql = String.format("insert into hanghoa(mahh, tenhh, maloai, soluong, dvt, gia) values('%s', N'%s', '%s', '%d', N'%s', '%f');", hh.getMaHH(), hh.getTenHH(), hh.getMaLoai(), hh.getSoLuong(), hh.getdVT(), hh.getGia());
+    //thêm chức vụ
+    public static boolean themChucVu(ChucVu chucVu){
+        boolean ketQua = false;
+        String sql = String.format("insert into chucvu(macv, tencv, luong) values('%s', N'%s', '%f');", chucVu.getMaCV(), chucVu.getTenCV(), chucVu.getLuong());
         SQLServerDataProvider provider = new SQLServerDataProvider();
         provider.open();
         int n = provider.excuteUpdate(sql);
         if(n == 1){
-            kq = true;
+            ketQua = true;
         }
         provider.Close();
-        return kq;
+        return ketQua;
     }
-    
-    public static boolean xoaHangHoa(String mahh){
-        boolean kq = false;
-        String sql = String.format("delete from hanghoa where mahh='%s'", mahh);
+ 
+    //xóa chức vụ
+    public static boolean xoaChucVu(String maChucVu){
+        boolean ketQua= false;
+        String sql = String.format("delete from chucvu where macv='%s'", maChucVu);
         SQLServerDataProvider provider = new SQLServerDataProvider();
         provider.open();
         int n = provider.excuteUpdate(sql);
         if(n == 1){
-            kq = true;
+            ketQua = true;
         }
         provider.Close();
-        return kq;
+        return ketQua;
     }
     
-    public static ArrayList<HangHoa>timKiemHangHoaTheoMaLoai(String maloai){
-        ArrayList<HangHoa> dshh = new ArrayList<HangHoa>();
+    //tìm kiếm chức vụ
+    public static ArrayList<ChucVu>timKiemChucVuTheoMa(String maChuVu){
+        ArrayList<ChucVu> danhSachChuVu = new ArrayList<ChucVu>();
         try {
-            String sql = "Select * from hanghoa where maloai like '%" + maloai + " %'";
+            String sql = "Select * from chucvu where macv like '%" + maChuVu + " %'";
             SQLServerDataProvider provider = new SQLServerDataProvider();
             provider.open();
             ResultSet resultSet = provider.excuteQuery(sql);
             while(resultSet.next()){
-                HangHoa hh = new HangHoa();
-                hh.setMaHH(resultSet.getString("mahh"));
-                hh.setTenHH(resultSet.getString("tenhh"));
-                hh.setMaLoai(resultSet.getString("maloai"));
-                hh.setSoLuong(resultSet.getInt("soluong"));
-                hh.setdVT(resultSet.getString("dvt"));
-                hh.setGia(resultSet.getFloat("gia"));
-                dshh.add(hh);
+                ChucVu chucVu = new ChucVu();
+                chucVu.setMaCV(resultSet.getString("macv"));
+                chucVu.setTenCV(resultSet.getString("tencv"));
+                chucVu.setLuong(resultSet.getFloat("luong"));
+                danhSachChuVu.add(chucVu);
             }
             provider.Close();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return dshh;
+        return danhSachChuVu;
     }
     
-    public static boolean capNhatHangHoa(HangHoa hh){
-        boolean kq = false;
-        String sql = String.format("update hanghoa set tenhh = N'%s', maloai = '%s', soluong = '%d', dvt = N'%s', gia = '%f' " + "where mahh= '%s'", hh.getTenHH(), hh.getMaLoai(), hh.getSoLuong(), hh.getdVT(), hh.getGia(), hh.getMaHH());
+    //cập nhật chức vụ
+    public static boolean capNhatChucVu(ChucVu chucVu){
+        boolean ketQua = false;
+        String sql = String.format("update chucVu set tencv = N'%s', luong = '%f' " + "where macv= '%s'", chucVu.getTenCV(), chucVu.getLuong(), chucVu.getMaCV());
         SQLServerDataProvider provider = new SQLServerDataProvider();
         provider.open();
         int n = provider.excuteUpdate(sql);
         if(n == 1){
-            kq = true;
+            ketQua = true;
         }
         provider.Close();
-        return kq;
+        return ketQua;
     }
+    
 }
